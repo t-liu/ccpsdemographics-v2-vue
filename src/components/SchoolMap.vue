@@ -156,12 +156,6 @@ const addSchoolMarkers = () => {
         circle.on('click', () => {
           console.log('📍 Circle clicked for:', school.info.name)
           emit('school-selected', school)
-          layer.setStyle({
-            weight: 3,
-            color: '#000',
-            fillOpacity: 0.8,
-          })
-          layer.bringToFront()
         })
 
         circle.on('mouseover', function (e) {
@@ -275,7 +269,7 @@ watch(
           layer.setStyle({ weight: 3, fillOpacity: 0.8 })
           setTimeout(() => {
             layer.setStyle({ weight: 1, fillOpacity: 0.6 })
-          }, 2000)
+          }, 8000)
         }
       })
     }
