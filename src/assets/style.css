@@ -1,0 +1,608 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  color: #6d7988;
+}
+.content {
+  margin-bottom: 60px;
+  text-align: left;
+}
+
+/* TYPE FAMILIES */
+.rob {
+  font-family: 'Roboto Slab', sans-serif;
+}
+.ral {
+  font-family: 'Raleway', sans-serif;
+}
+.osc {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
+/* CASE */
+.upper {
+  text-transform: uppercase;
+}
+.lower {
+  text-transform: lowercase;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* COLORS */
+.red {
+  color: #a00;
+}
+.gray {
+  color: #777;
+}
+.black {
+  color: #000;
+}
+
+/* WEIGHTS */
+.lighter {
+  font-weight: 300;
+}
+.normal {
+  font-weight: normal;
+}
+.heavier {
+  font-weight: 700;
+}
+.fat {
+  font-weight: 900;
+}
+
+/* For the navigation header */
+.navbar {
+  z-index: 4000;
+  padding-right: 50px;
+  padding-left: 50px;
+  border: none;
+  background-color: #000000;
+  position: relative;
+  left: 0;
+  right: 0;
+  color: #d3d3d3;
+}
+.navbar ul,
+.navbar li {
+  margin: 0px;
+  padding: 0px;
+}
+.navbar p {
+  font-size: 18px;
+}
+.navbar a {
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+}
+.navbar a.navbar-link,
+.share-button a {
+  color: #6d7988;
+}
+.navbar a.navbar-link:hover {
+  color: #c4c4c4;
+}
+.navbar .navbar-text {
+  float: left;
+  margin-right: 15px;
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+.navbar-text .about-link {
+  margin-top: 15px;
+}
+.navbar-header,
+.navbar-footer-left,
+.navbar-nav > li {
+  float: left;
+}
+.navbar-right {
+  float: right;
+}
+
+/* for the about us box */
+.about-box {
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(rgba(243, 242, 244, 1)),
+    to(rgba(217, 216, 218, 0.95))
+  );
+  background-image: -webkit-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
+  background-image: -moz-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
+  background-image: -o-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
+  background-image: -ms-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
+  background-image: linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#f3f2f4', EndColorStr='#d9d8da');
+  border: 1px solid silver;
+  border-radius: 2px;
+  word-wrap: break-word;
+  position: absolute;
+  right: 5%;
+  width: 45%;
+  max-width: 500px;
+  font-size: 0.9em;
+  line-height: 1.4em;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  display: none;
+  z-index: 100;
+  -webkit-box-shadow: 0px 5px 18px 0px rgba(5, 5, 5, 0.7); /* Android 2.3+, iOS 4.0.2-4.2, Safari 3-4 */
+  box-shadow: 0px 5px 18px 0px rgba(5, 5, 5, 0.7); /* Chrome 6+, Firefox 4+, IE 9+, iOS 5+, Opera 10.50+ */
+}
+.about-box a:visited {
+  opacity: 0.8;
+}
+.about-content {
+  padding-top: 20px;
+  background-color: none;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #000;
+}
+.about-content a {
+  color: #00f;
+}
+.about-content u {
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+.about-close {
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  right: 18px;
+  border-radius: 4px;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  padding-top: 1px;
+  text-align: center;
+  background-color: #ddd;
+}
+.summary-tooltip {
+  display: inline-block;
+  width: 185px;
+}
+
+/* tool tip stuff + tipsy.js stuff*/
+.tip1 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11pt;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+.tip2 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10pt;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: -12px;
+}
+.tip3 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10pt;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 0px;
+}
+.tippy-box[data-theme~='custom'] {
+  background-color: white;
+  color: #333;
+  font-size: 12px;
+  border-style: solid;
+  border-color: #333;
+}
+.tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #333;
+}
+
+/* For the chart (jumbotron) */
+
+.jumbotron {
+  padding: 2px;
+  margin-bottom: 30px;
+  color: inherit;
+  background-color: #fff;
+}
+svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+svg text {
+  font-size: 12px;
+  font-family: 'Raleway', sans-serif;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: block;
+}
+.y.axis path {
+  display: block;
+}
+
+/* For the map and school list*/
+#school-breakdown > div {
+  border-radius: 3px;
+}
+#school-breakdown-notation {
+  max-width: 600px;
+  margin: 0 auto;
+}
+#map-container {
+  margin-right: -2px;
+  border-right: 2px solid #aaa;
+  width: 50%;
+  float: left;
+  height: 500px;
+  position: relative;
+}
+#map {
+  width: 100%;
+  height: 100%;
+}
+#map-hover-box {
+  position: fixed;
+  width: 250px;
+  background: #fff;
+  color: #000;
+  padding: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6);
+  font-family: 'Raleway', sans-serif;
+  display: none;
+  z-index: 9999;
+  line-height: 1.3em;
+}
+#school-list-container {
+  width: 50%;
+  height: 500px;
+  float: right;
+  background: #f8f5f2;
+}
+.school-list {
+  border-top: 2px solid #aaa;
+  width: 100%;
+  height: 500px;
+  overflow-y: scroll;
+  box-shadow: inset 0px 0px 10px #ccc;
+}
+.school-list > ul {
+  padding-left: 0px;
+  list-style-type: none;
+}
+.school-list > ul > li {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  cursor: pointer;
+  border-bottom: 1px solid #aaa;
+  list-style-type: none;
+}
+.school-list > ul > li:hover {
+  background: #fff;
+}
+.school-list h5 {
+  text-transform: uppercase;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  color: #000;
+}
+.selected-school {
+  background: #fff;
+  display: block !important;
+  cursor: default !important;
+}
+.selected-school .inner {
+  padding-bottom: 8px;
+  font-size: 13px;
+}
+.selected-school h5 {
+  margin-bottom: 1px;
+}
+.selected-school .inner table {
+  width: 100%;
+}
+.selected-school .inner td {
+  text-align: center;
+}
+.selected-school .inner td.white {
+  color: #98abc5;
+}
+.selected-school .inner td.black {
+  color: #8a89a6;
+}
+.selected-school .inner td.other {
+  color: #a05d56;
+}
+.selected-school .inner td.hispanic {
+  color: #ff8c00;
+}
+
+/* For the map legend */
+.legend {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-family: 'Raleway', sans-serif;
+}
+.legend h4 {
+  margin: 0 0 10px 0;
+  font-size: 10px;
+  font-weight: 500;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+.legend-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #000;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.legend-item span {
+  font-size: 10px;
+  color: #333;
+}
+
+/* Social Bookmark Icons */
+
+.social-bookmarks {
+  padding-top: 10px;
+  margin: 0;
+  list-style-type: none;
+}
+.social-bookmarks li {
+  float: left!;
+  margin-right: 2px;
+  display: inline;
+  width: auto;
+  background-image: none;
+}
+.social-bookmarks li a {
+  -moz-transition: all 0.3s ease 0s;
+  display: block;
+  float: left;
+  height: 100%;
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  text-indent: -9999px;
+}
+.social-bookmarks li a {
+  background-position: 0 -40px !important;
+  background-color: transparent;
+}
+.social-bookmarks li a:hover {
+  background-position: 0 -40px !important;
+}
+.social-bookmarks li.github a {
+  background: url(/images/icons/github.png) no-repeat 0 0;
+}
+.social-bookmarks li.github a:hover {
+  background-color: #7292a2;
+}
+.social-bookmarks li.linkedin a {
+  background: url(/images/icons/linkedin.png) no-repeat 0 0;
+}
+.social-bookmarks li.linkedin a:hover {
+  background-color: #007bb6;
+}
+.social-bookmarks li.twitter a {
+  background: url(/images/icons/twitter.png) no-repeat 0 0;
+}
+.social-bookmarks li.twitter a:hover {
+  background-color: #48c4d2;
+}
+.social-bookmarks li.mailto a {
+  background: url(/images/icons/mailto.png) no-repeat 0 0;
+}
+.social-bookmarks li.mailto a:hover {
+  background-color: #444444;
+}
+
+/* Footer-specific navbar styling */
+.footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #000;
+}
+
+/* Fix footer navbar text positioning */
+footer .navbar-footer-left {
+  float: none !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+footer .navbar-footer-left .navbar-text {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
+/* Fix footer social bookmarks positioning */
+footer .social-bookmarks {
+  float: none !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  margin-left: auto;
+}
+
+footer .social-bookmarks ul {
+  display: flex !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+footer .social-bookmarks li {
+  float: none !important;
+  display: inline-flex !important;
+}
+
+/* Ensure footer has correct height */
+.footer {
+  height: 60px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Standard (Mozilla) */
+@keyframes blink {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.blink {
+  animation: blink 1.5s infinite;
+}
+/* Chrome & Safari */
+@-webkit-keyframes blink {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.blink {
+  -webkit-animation: blink 1.5s infinite;
+}
+
+/* Mobile */
+@media only screen and (max-width: 1280px) {
+  .navbar {
+    padding-right: 5px;
+    padding-left: 10px;
+  }
+  .navbar-text {
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 10px;
+  }
+}
+@media only screen and (max-width: 900px) {
+  .summary-tooltip {
+    width: 150px;
+  }
+  .tipsy-inner {
+    border-width: medium;
+    padding: 8px;
+  }
+  .tip1 {
+    font-size: 9pt;
+  }
+  .tip3 {
+    font-size: 9pt;
+  }
+  svg text {
+    font-size: 10px;
+  }
+  .legend {
+    font-size: 9px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .about-box {
+    width: 75%;
+    max-width: 500px;
+  }
+  .about-content {
+    font-weight: 400;
+  }
+  .summary-tooltip {
+    width: 140px;
+  }
+  .tipsy-inner {
+    border-width: medium;
+    padding: 8px;
+  }
+  .tip1 {
+    font-size: 8pt;
+  }
+  .tip3 {
+    font-size: 8pt;
+  }
+  svg text {
+    font-size: 9px;
+  }
+  .legend {
+    font-size: 8px;
+  }
+  #map-container {
+    width: 100%;
+    height: 300px;
+    float: none !important;
+    border-right: none !important;
+    border-bottom: 3px solid #aaa;
+  }
+  #map-hover-box {
+    position: fixed;
+    width: 250px;
+    background: #fff;
+    color: #000;
+    padding: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    line-height: 1.3em;
+    border-radius: 3px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 12px;
+    pointer-events: none;
+  }
+  .school-list-container {
+    width: 100%;
+    height: 360px;
+    float: none !important;
+  }
+  .school-list {
+    height: 360px;
+  }
+  .selected-school .inner {
+    font-size: 10px;
+  }
+  .footer p {
+    font-size: 12px;
+  }
+}
