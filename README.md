@@ -1,6 +1,20 @@
 # ccpsdemographics
 
-This template should help get you started developing with Vue 3 in Vite.
+This single page website illustrates the changing student demographics for the public schools in Charles County, Maryland.
+
+Libraries that were used to help along the way:
+
+- Vue.js (framework)
+- Bootstrap (mainly for CSS)
+- d3.js (for the summary chart)
+- tippy (for the tooltip)
+- Leaflet (for the map)
+
+Improvements that can be made:
+
+- Make the d3.js chart interactive, perhaps buttons to filter on grade level.
+- Improve the UI/UX (especially for mobile)
+- Unit test
 
 ## Recommended IDE Setup
 
