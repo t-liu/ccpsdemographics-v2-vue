@@ -40,9 +40,10 @@ jobs:
 
       # Invalidate CloudFront cache (optional, only if using CloudFront)
       - name: Invalidate CloudFront
-        if: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        if: env.AWS_CLOUDFRONT_DISTRIBUTION_ID != ''
         uses: chetan/invalidate-cloudfront-action@v2
         env:
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
           DISTRIBUTION: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
           PATHS: '/*'
           AWS_REGION: 'us-east-1'
