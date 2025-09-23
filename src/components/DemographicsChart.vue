@@ -210,11 +210,6 @@ const createChart = () => {
     if (rectElements.length > 0) {
       initTooltips('svg rect[title]')
       console.log('Tooltips initialized')
-
-      // Debug: log first tooltip content
-      if (rectElements[0]) {
-        console.log('First tooltip content:', rectElements[0].getAttribute('title'))
-      }
     }
   }, 500)
 }

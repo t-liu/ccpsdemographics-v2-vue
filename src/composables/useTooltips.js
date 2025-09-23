@@ -7,30 +7,29 @@ export function useTooltips() {
 
   const initTooltips = (selector) => {
     console.log('Initializing tooltips for selector:', selector)
-    
+
     // Clean up existing tooltips
     cleanup()
-    
+
     const elements = document.querySelectorAll(selector)
     console.log('Found elements:', elements.length)
-    
+
     if (elements.length === 0) {
       console.warn('No elements found for tooltip selector:', selector)
       return
     }
-    
+
     try {
       tippyInstances = tippy(elements, {
         content(reference) {
           const title = reference.getAttribute('title')
-          console.log('Tooltip content:', title)
           return title
         },
         allowHTML: true,
         placement: 'auto',
         theme: 'custom',
         arrow: true,
-        interactive: false
+        interactive: false,
       })
       console.log('Tooltips created:', tippyInstances.length)
     } catch (error) {
@@ -39,7 +38,7 @@ export function useTooltips() {
   }
 
   const cleanup = () => {
-    tippyInstances.forEach(instance => {
+    tippyInstances.forEach((instance) => {
       if (instance && instance.destroy) {
         instance.destroy()
       }
@@ -53,6 +52,6 @@ export function useTooltips() {
 
   return {
     initTooltips,
-    cleanup
+    cleanup,
   }
 }

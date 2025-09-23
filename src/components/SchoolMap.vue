@@ -162,7 +162,6 @@ const addSchoolMarkers = () => {
           initHover()
           const layer = e.target
 
-          // Update circle style (matching your old code)
           layer.setStyle({
             weight: 3,
             color: '#000',
@@ -264,9 +263,9 @@ watch(
         ) {
           layer.openPopup()
           // Temporarily highlight
-          layer.setStyle({ weight: 3, fillOpacity: 0.8 })
+          layer.setStyle({ weight: 3, color: '#000' })
           setTimeout(() => {
-            layer.setStyle({ weight: 1, fillOpacity: 0.6 })
+            layer.setStyle({ weight: 1, color: '#222' })
           }, 8000)
         }
       })
