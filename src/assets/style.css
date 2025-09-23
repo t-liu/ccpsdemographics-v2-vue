@@ -191,6 +191,7 @@ svg text {
 #map {
   width: 100%;
   height: 100%;
+  max-width: 100%;
 }
 #map-hover-box {
   position: fixed;
@@ -498,10 +499,12 @@ footer .social-bookmarks li {
   }
   #map-container {
     width: 100%;
-    height: 300px;
+    height: 500px;
     float: none !important;
     border-right: none !important;
     border-bottom: 3px solid #aaa;
+    position: relative;
+    overflow: hidden;
   }
   #map-hover-box {
     position: fixed;
