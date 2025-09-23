@@ -93,9 +93,7 @@ body {
   margin-right: 15px;
   font-family: 'Open Sans Condensed', sans-serif;
 }
-.navbar-text .about-link {
-  margin-top: 15px;
-}
+
 .navbar-header,
 .navbar-footer-left,
 .navbar-nav > li {
@@ -105,71 +103,6 @@ body {
   float: right;
 }
 
-/* for the about us box */
-.about-box {
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(rgba(243, 242, 244, 1)),
-    to(rgba(217, 216, 218, 0.95))
-  );
-  background-image: -webkit-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
-  background-image: -moz-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
-  background-image: -o-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
-  background-image: -ms-linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
-  background-image: linear-gradient(top, rgba(243, 242, 244, 1), rgba(217, 216, 218, 0.95));
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#f3f2f4', EndColorStr='#d9d8da');
-  border: 1px solid silver;
-  border-radius: 2px;
-  word-wrap: break-word;
-  position: absolute;
-  right: 5%;
-  width: 45%;
-  max-width: 500px;
-  font-size: 0.9em;
-  line-height: 1.4em;
-  padding-top: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  display: none;
-  z-index: 100;
-  -webkit-box-shadow: 0px 5px 18px 0px rgba(5, 5, 5, 0.7); /* Android 2.3+, iOS 4.0.2-4.2, Safari 3-4 */
-  box-shadow: 0px 5px 18px 0px rgba(5, 5, 5, 0.7); /* Chrome 6+, Firefox 4+, IE 9+, iOS 5+, Opera 10.50+ */
-}
-.about-box a:visited {
-  opacity: 0.8;
-}
-.about-content {
-  padding-top: 20px;
-  background-color: none;
-  font-family: 'Raleway', sans-serif;
-  font-weight: 500;
-  text-transform: uppercase;
-  color: #000;
-}
-.about-content a {
-  color: #00f;
-}
-.about-content u {
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-decoration: none;
-}
-.about-close {
-  cursor: pointer;
-  display: block;
-  position: absolute;
-  right: 18px;
-  border-radius: 4px;
-  font-weight: 700;
-  width: 20px;
-  height: 20px;
-  padding-top: 1px;
-  text-align: center;
-  background-color: #ddd;
-}
 .summary-tooltip {
   display: inline-block;
   width: 185px;
@@ -544,13 +477,6 @@ footer .social-bookmarks li {
 }
 
 @media only screen and (max-width: 768px) {
-  .about-box {
-    width: 75%;
-    max-width: 500px;
-  }
-  .about-content {
-    font-weight: 400;
-  }
   .summary-tooltip {
     width: 140px;
   }

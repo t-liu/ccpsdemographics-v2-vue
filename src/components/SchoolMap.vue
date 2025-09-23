@@ -17,19 +17,19 @@
     <div class="legend">
       <h4>School Levels</h4>
       <div class="legend-item">
-        <div class="legend-circle" style="background-color: #ff6b6b"></div>
+        <div class="legend-circle" style="background-color: #98abc5"></div>
         <span>Elementary (E)</span>
       </div>
       <div class="legend-item">
-        <div class="legend-circle" style="background-color: #4ecdc4"></div>
+        <div class="legend-circle" style="background-color: #8a89a6"></div>
         <span>Middle (M)</span>
       </div>
       <div class="legend-item">
-        <div class="legend-circle" style="background-color: #45b7d1"></div>
+        <div class="legend-circle" style="background-color: #a05d56"></div>
         <span>High (H)</span>
       </div>
       <div class="legend-item">
-        <div class="legend-circle" style="background-color: #96ceb4"></div>
+        <div class="legend-circle" style="background-color: #ff8c00"></div>
         <span>Other (O)</span>
       </div>
     </div>
@@ -67,10 +67,10 @@ const hoverBoxContent = ref('')
 
 // Color mapping for school levels
 const levelColors = {
-  E: '#ff6b6b', // Red for Elementary
-  M: '#4ecdc4', // Teal for Middle
-  H: '#45b7d1', // Blue for High
-  O: '#96ceb4', // Green for Other
+  E: '#98abc5', // Red for Elementary
+  M: '#8a89a6', // Teal for Middle
+  H: '#a05d56', // Blue for High
+  O: '#ff8c00', // Green for Other
 }
 
 const initMap = () => {
@@ -143,12 +143,12 @@ const addSchoolMarkers = () => {
 
         // Create circle marker matching your old codebase style
         const circle = L.circleMarker([lat, lon], {
-          radius: 7,
+          radius: 5,
           fillColor: levelColors[level] || levelColors['O'],
-          color: '#000', // Black stroke
+          color: '#222', // Black stroke
           weight: 1, // stroke-width="1"
           opacity: 1, // stroke-opacity="1"
-          fillOpacity: 0.6, // Semi-transparent fill
+          fillOpacity: 0.9, // Semi-transparent fill
           lineCap: 'round', // stroke-linecap="round"
           lineJoin: 'round', // stroke-linejoin="round"
         })
@@ -166,7 +166,6 @@ const addSchoolMarkers = () => {
           layer.setStyle({
             weight: 3,
             color: '#000',
-            fillOpacity: 0.8,
           })
           layer.bringToFront()
 
@@ -185,9 +184,8 @@ const addSchoolMarkers = () => {
 
           // Reset circle style
           layer.setStyle({
-            fillOpacity: 0.6,
             weight: 1,
-            color: '#000',
+            color: '#222',
           })
           layer.bringToBack()
 
