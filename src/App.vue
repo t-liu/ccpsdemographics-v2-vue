@@ -103,7 +103,7 @@
                 >National Center for Education Statistics</a
               >
               and
-              <a href="http://www.ccboe.com/aboutus/fastfacts.php" target="_blank"
+              <a href="https://www.ccboe.com/about/public-info-media" target="_blank"
                 >Charles County Public School System.</a
               >
             </p>
