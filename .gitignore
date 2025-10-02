@@ -33,3 +33,4 @@ coverage
 .editorconfig
 .gitattributes
 .prettierrc.json
+.env
