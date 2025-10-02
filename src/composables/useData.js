@@ -1,5 +1,4 @@
 import { ref, computed } from 'vue'
-import Papa from 'papaparse'
 import _ from 'lodash'
 
 export function useData() {
@@ -11,94 +10,144 @@ export function useData() {
   const loadData = async () => {
     loading.value = true
     error.value = null
-    
+
     try {
-      const response = await fetch('/data/ccps_data.csv')
-      const csvText = await response.text()
-      
-      const parsed = Papa.parse(csvText, {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/schools`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': `${import.meta.env.VITE_API_KEY}`,
+        },
       })
-      
-      rawData.value = parsed.data
-      processData()
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const schoolData = await response.json()
+      console.log('Data loaded:', schoolData.length, 'schools')
+
+      rawData.value = schoolData
+      processSchoolData()
     } catch (err) {
+      console.error('Error loading data:', err)
       error.value = err.message
     } finally {
       loading.value = false
     }
   }
 
-  const processData = () => {
-    console.log('Processing', rawData.value.length, 'raw records')
-    
-    // Use your original reformat logic
-    var lookup = {}
-    var schoolsArray = []
-    
-    for (var item, i = 0; item = rawData.value[i++];) {
-      var id = item.school_id
-      if (!(id in lookup)) {
-        lookup[id] = 1
-        schoolsArray.push({
-          id: item.school_id, // Vue needs 'id' for keys
-          school_id: item.school_id,
-          info: {
-            name: item.school,
-            address: item.address,
-            city: item.city,
-            state: item.state,
-            zip: item.zip,
-            level: item.level,
-            lat: +item.latitude, // Convert to number with +
-            lon: +item.longitude // Convert to number with +
-          },
-          before: [{
-            short_year: item.short_year,
-            white: item.white,
-            black: item.black,
-            other: item.other,
-            hispanic: item.hispanic,
-            total: item.total
-          }],
-          after: [] // Initialize empty, will be filled below
-        })
-      }
-    }
+  const processSchoolData = () => {
+    console.log('Processing school data...')
 
-    // Now add the "after" data (14-15 year data)
-    const afterData = _.chain(rawData.value)
-      .filter(d => d && d.short_year && d.short_year === "14-15")
-      .value()
+    schools.value = rawData.value.map((school) => {
+      // Extract first and last year data for "before" and "after"
+      const firstYearData =
+        school.yearlyData && school.yearlyData.length > 0 ? school.yearlyData[0] : null
 
-    // Add after data to matching schools
-    afterData.forEach(record => {
-      const school = schoolsArray.find(s => s.school_id === record.school_id)
-      if (school) {
-        school.after = [{
-          short_year: record.short_year,
-          white: record.white,
-          black: record.black,
-          other: record.other,
-          hispanic: record.hispanic,
-          total: record.total
-        }]
+      const lastYearData =
+        school.yearlyData && school.yearlyData.length > 0
+          ? school.yearlyData[school.yearlyData.length - 1]
+          : null
+
+      return {
+        id: school.schoolId,
+        school_id: school.schoolId,
+        info: {
+          name: school.name,
+          address: school.location.address,
+          city: school.location.city,
+          state: school.location.state,
+          zip: school.location.zipCode,
+          level: school.level,
+          // MongoDB stores coordinates as [longitude, latitude], need to reverse
+          lat: extractNumber(school.location.coordinates.coordinates[1]),
+          lon: extractNumber(school.location.coordinates.coordinates[0]),
+        },
+        before: firstYearData
+          ? [
+              {
+                short_year: firstYearData.academicYear.short,
+                white: extractNumber(firstYearData.demographics.white),
+                black: extractNumber(firstYearData.demographics.black),
+                other: extractNumber(firstYearData.demographics.other),
+                hispanic: extractNumber(firstYearData.demographics.hispanic),
+                total: extractNumber(firstYearData.demographics.total),
+              },
+            ]
+          : [],
+        after: lastYearData
+          ? [
+              {
+                short_year: lastYearData.academicYear.short,
+                white: extractNumber(lastYearData.demographics.white),
+                black: extractNumber(lastYearData.demographics.black),
+                other: extractNumber(lastYearData.demographics.other),
+                hispanic: extractNumber(lastYearData.demographics.hispanic),
+                total: extractNumber(lastYearData.demographics.total),
+              },
+            ]
+          : [],
+        // Store all yearly data for the chart
+        yearlyData: school.yearlyData || [],
       }
     })
 
-    schools.value = schoolsArray
     console.log('Processed', schools.value.length, 'schools')
     console.log('First school:', schools.value[0])
   }
 
+  // Helper function to extract numbers from MongoDB format
+  const extractNumber = (value) => {
+    if (!value) return 0
+
+    // Handle MongoDB number types
+    if (value.$numberInt) return parseInt(value.$numberInt)
+    if (value.$numberDouble) return parseFloat(value.$numberDouble)
+    if (value.$numberLong) return parseInt(value.$numberLong)
+
+    // If it's already a plain number
+    if (typeof value === 'number') return value
+
+    // Try to parse as number
+    const parsed = parseFloat(value)
+    return isNaN(parsed) ? 0 : parsed
+  }
+
+  // Flatten yearlyData for chart consumption
+  const chartData = computed(() => {
+    const flattened = []
+
+    rawData.value.forEach((school) => {
+      if (school.yearlyData) {
+        school.yearlyData.forEach((yearData) => {
+          flattened.push({
+            school_id: school.schoolId,
+            school: school.name,
+            address: school.location.address,
+            city: school.location.city,
+            state: school.location.state,
+            zip: school.location.zipCode,
+            level: school.level,
+            year: yearData.academicYear.full,
+            short_year: yearData.academicYear.short,
+            latitude: extractNumber(school.location.coordinates.coordinates[1]),
+            longitude: extractNumber(school.location.coordinates.coordinates[0]),
+            black: extractNumber(yearData.demographics.black),
+            hispanic: extractNumber(yearData.demographics.hispanic),
+            white: extractNumber(yearData.demographics.white),
+            other: extractNumber(yearData.demographics.other),
+            total: extractNumber(yearData.demographics.total),
+          })
+        })
+      }
+    })
+
+    return flattened
+  })
+
   const availableYears = computed(() => {
-    return _.chain(rawData.value)
-      .map('short_year')
-      .uniq()
-      .sort()
-      .value()
+    return _.chain(chartData.value).map('short_year').uniq().sort().value()
   })
 
   return {
@@ -107,6 +156,7 @@ export function useData() {
     loading,
     error,
     availableYears,
-    loadData
+    chartData,
+    loadData,
   }
 }

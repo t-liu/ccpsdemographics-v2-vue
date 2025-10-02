@@ -148,19 +148,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useData } from '@/composables/useData'
 import DemographicsChart from '@/components/DemographicsChart.vue'
 import SchoolMap from '@/components/SchoolMap.vue'
 import SchoolList from '@/components/SchoolList.vue'
 
-const { rawData, schools, loading, error, loadData } = useData()
+const { chartData, schools, loading, error, loadData } = useData()
 const selectedSchool = ref(null)
-
-const chartData = computed(() => {
-  // Process your data for the chart
-  return rawData.value
-})
 
 const onSchoolSelected = (school) => {
   selectedSchool.value = school
