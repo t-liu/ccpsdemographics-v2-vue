@@ -90,6 +90,7 @@ body {
 }
 .navbar .navbar-text {
   float: left;
+  margin-left: 15px;
   margin-right: 15px;
   font-family: 'Open Sans Condensed', sans-serif;
 }
@@ -478,6 +479,49 @@ footer .social-bookmarks li {
 }
 
 @media only screen and (max-width: 768px) {
+  /* Remove padding from the main content column on mobile */
+  .col-xs-14 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  /* Also remove width from the empty side columns on mobile */
+  .col-xs-2 {
+    display: none;
+  }
+  /* Make the main column full width */
+  .col-xs-14 {
+    width: 100% !important;
+  }
+  /* Add back padding for readability to all content sections */
+  #briefsummary,
+  #ccps-breakdown,
+  #school-breakdown-summary,
+  #school-breakdown-notation,
+  #map-container,
+  #school-list-container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  /* Ensure footer stays at bottom */
+  footer {
+    position: relative;
+    clear: both;
+    width: 100%;
+  }
+
+  .footer {
+    position: relative;
+    width: 100%;
+    margin-top: 30px;
+  }
+  .footer p {
+    font-size: 12px;
+  }
+  /* Ensure content doesn't overlap footer */
+  .content {
+    clear: both;
+  }
+
   .summary-tooltip {
     width: 140px;
   }
@@ -530,8 +574,5 @@ footer .social-bookmarks li {
   }
   .selected-school .inner {
     font-size: 10px;
-  }
-  .footer p {
-    font-size: 12px;
   }
 }

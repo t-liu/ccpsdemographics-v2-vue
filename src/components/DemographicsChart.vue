@@ -1,14 +1,9 @@
-<template>
-  <div class="chart-container">
-    <div ref="chartRef" class="chart"></div>
-  </div>
-</template>
-
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import * as d3 from 'd3'
 import _ from 'lodash'
 import { useTooltips } from '@/composables/useTooltips'
+import { debounce } from 'lodash'
 
 const props = defineProps({
   data: {
@@ -21,12 +16,15 @@ const chartRef = ref(null)
 const { initTooltips } = useTooltips()
 
 const createChart = () => {
-  if (props.data.length === 0) return
+  if (props.data.length === 0 || !chartRef.value) {
+    console.warn('Chart data is empty or chartRef is not available')
+    return
+  }
 
   // Clear existing
   d3.select(chartRef.value).selectAll('*').remove()
 
-  // Process data for visualization
+  // Process data
   const yearlyData = _.chain(props.data)
     .groupBy('short_year')
     .map((records, year) => {
@@ -40,26 +38,37 @@ const createChart = () => {
         }),
         { white: 0, black: 0, hispanic: 0, other: 0 },
       )
-
       totals.total = totals.white + totals.black + totals.hispanic + totals.other
       return totals
     })
     .sortBy('year')
     .value()
 
-  console.log('Processed yearly data:', yearlyData)
+  // Get container width
+  const containerWidth = chartRef.value.offsetWidth || 800
 
   // Set dimensions and margins
-  const margin = { top: 20, right: 120, bottom: 60, left: 80 }
-  const width = 800 - margin.left - margin.right
+  const margin = {
+    top: window.innerWidth <= 768 ? 10 : 20,
+    right: window.innerWidth <= 768 ? 10 : 120,
+    bottom: window.innerWidth <= 768 ? 40 : 60,
+    left: window.innerWidth <= 768 ? 40 : 80,
+  }
+  const width = Math.min(containerWidth, 800) - margin.left - margin.right
   const height = 400 - margin.top - margin.bottom
+  const fontSize = window.innerWidth <= 768 ? '10px' : '12px'
 
   // Create SVG
   const svg = d3
     .select(chartRef.value)
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
+    .attr('width', '100%')
     .attr('height', height + margin.top + margin.bottom)
+    .attr(
+      'viewBox',
+      `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`,
+    )
+    .attr('preserveAspectRatio', 'xMidYMid meet')
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`)
 
@@ -68,7 +77,7 @@ const createChart = () => {
     .scaleBand()
     .domain(yearlyData.map((d) => d.year))
     .range([0, width])
-    .padding(0.1)
+    .padding(window.innerWidth <= 768 ? 0.05 : 0.1)
 
   const y = d3
     .scaleLinear()
@@ -84,7 +93,6 @@ const createChart = () => {
     hispanic: '#ff8c00',
   }
 
-  // Create color scale for D3 format function
   const colorScale = d3
     .scaleOrdinal()
     .domain(['white', 'black', 'other', 'hispanic'])
@@ -92,10 +100,9 @@ const createChart = () => {
 
   // Stack the data
   const stack = d3.stack().keys(['white', 'black', 'other', 'hispanic'])
-
   const stackedData = stack(yearlyData)
 
-  // Create the bars
+  // Create bars
   const groups = g
     .selectAll('.year-group')
     .data(stackedData)
@@ -114,68 +121,50 @@ const createChart = () => {
     .attr('height', (d) => y(d[0]) - y(d[1]))
     .attr('width', x.bandwidth())
 
-  // Convert your original tooltip code to work with the modern D3 stack pattern
+  // Tooltips
   rects.attr('title', function (d) {
-    // Get the ethnicity/race from the parent group
     const parentData = d3.select(this.parentNode).datum()
-    const ethnicity = parentData.key // 'white', 'black', 'hispanic', 'other'
-    const year = d.data.year // '05-06', '06-07', etc.
-    const studentCount = d[1] - d[0] // The height of this segment
-    const totalStudents = d.data.total // Total for this year
-    const color = colorScale(ethnicity) // Get the color for this ethnicity
+    const ethnicity = parentData.key
+    const year = d.data.year
+    const studentCount = d[1] - d[0]
+    const totalStudents = d.data.total
+    const color = colorScale(ethnicity)
 
-    // Convert to your original tooltip format
-    const tip =
-      '<span class="summary-tooltip">' +
-      '<p class="tip3"> School Year: ' +
-      year +
-      '</p>' +
-      '<p class="tip3"> Student Body #: ' +
-      d3.format(',')(totalStudents) +
-      '</p>' +
-      '<p class="tip3"> -------------------------- </p>' +
-      '<p class="tip3"> Race/Ethnicity: <span style="color:' +
-      color +
-      '"> ' +
-      ethnicity.charAt(0).toUpperCase() +
-      ethnicity.slice(1) +
-      '</span></p>' +
-      '<p class="tip1"> # of Students: <span style="color:' +
-      color +
-      '"> ' +
-      d3.format(',')(studentCount) +
-      '</span></p>' +
-      '<p class="tip1"> % of Students: <span style="color:' +
-      color +
-      '"> ' +
-      d3.format('.2%')(studentCount / totalStudents) +
-      '</span></p>' +
-      '</span>'
-
-    return tip
+    return `
+      <span class="summary-tooltip">
+        <p class="tip3">School Year: ${year}</p>
+        <p class="tip3">Student Body #: ${d3.format(',')(totalStudents)}</p>
+        <p class="tip3">--------------------------</p>
+        <p class="tip3">Race/Ethnicity: <span style="color:${color}">${ethnicity.charAt(0).toUpperCase() + ethnicity.slice(1)}</span></p>
+        <p class="tip1"># of Students: <span style="color:${color}">${d3.format(',')(studentCount)}</span></p>
+        <p class="tip1">% of Students: <span style="color:${color}">${d3.format('.2%')(studentCount / totalStudents)}</span></p>
+      </span>
+    `
   })
 
-  console.log('Created', rects.size(), 'rectangles with tooltips')
-
-  // Add X axis
+  // Add axes
   g.append('g')
     .attr('class', 'x axis')
     .attr('transform', `translate(0,${height})`)
     .call(d3.axisBottom(x))
 
-  // Add Y axis
   g.append('g').attr('class', 'y axis').call(d3.axisLeft(y))
 
   // Add legend
+  const legendX = window.innerWidth <= 768 ? 10 : width + margin.left + 10
+  const legendY =
+    window.innerWidth <= 768 ? height + margin.top + margin.bottom + 20 : margin.top + 20
+
   const legend = svg
     .append('g')
     .attr('class', 'legend')
-    .attr('transform', `translate(${width + margin.left + 10}, ${margin.top + 20})`)
+    .attr('transform', `translate(${legendX}, ${legendY})`)
 
   const legendItems = Object.entries(colors).map((d, i) => ({
     key: d[0],
     color: d[1],
-    y: i * 25,
+    y: window.innerWidth <= 768 ? 0 : i * 25,
+    x: window.innerWidth <= 768 ? i * 80 : 0,
   }))
 
   const legendItem = legend
@@ -184,7 +173,9 @@ const createChart = () => {
     .enter()
     .append('g')
     .attr('class', 'legend-item')
-    .attr('transform', (d) => `translate(0, ${d.y})`)
+    .attr('transform', (d) =>
+      window.innerWidth <= 768 ? `translate(${d.x}, ${d.y})` : `translate(0, ${d.y})`,
+    )
 
   legendItem
     .append('rect')
@@ -198,26 +189,35 @@ const createChart = () => {
     .append('text')
     .attr('x', 20)
     .attr('y', 12)
-    .style('font-size', '12px')
+    .style('font-size', fontSize)
     .style('font-family', 'Raleway, sans-serif')
     .style('fill', '#000')
     .text((d) => d.key.charAt(0).toUpperCase() + d.key.slice(1))
 
-  // Initialize tooltips after chart is created
+  // Initialize tooltips
   setTimeout(() => {
     const rectElements = document.querySelectorAll('svg rect[title]')
-    console.log('Found', rectElements.length, 'elements with titles for tooltips')
     if (rectElements.length > 0) {
       initTooltips('svg rect[title]')
-      console.log('Tooltips initialized')
     }
   }, 500)
+}
+
+const debouncedCreateChart = debounce(createChart, 200)
+
+const handleResize = () => {
+  debouncedCreateChart()
 }
 
 onMounted(() => {
   if (props.data.length > 0) {
     createChart()
   }
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 
 watch(
@@ -230,15 +230,24 @@ watch(
 )
 </script>
 
+<template>
+  <div ref="chartRef" class="chart-container"></div>
+</template>
+
 <style scoped>
 .chart-container {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
+  max-width: 800px;
+  height: auto;
+  margin: 0 auto; /* Center horizontally */
+  display: flex; /* Use flexbox to center content */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically, if needed */
 }
 
-.chart {
-  max-width: 100%;
+.chart-container svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 </style>
