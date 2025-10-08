@@ -78,7 +78,6 @@
                   @school-selected="onSchoolSelected"
                 />
               </div>
-
               <div id="school-list-container">
                 <SchoolList
                   :schools="schools"
@@ -87,24 +86,24 @@
                 />
               </div>
             </div>
-          </div>
-          <div id="school-breakdown-notation">
-            <p class="gray small rob">
-              <span class="upper fat ral">Note: </span>This analysis includes schools and programs
-              listed under the
-              <a href="http://www.ccboe.com/" target="_blank">Charles County Board of Education</a>.
-              "Other" in the analysis includes the following: American Indian/Alaska Natives, Asian
-              or Asian/Pacific Islanders, Hawaiian Native/Pacific Islanders, and Multi-racial
-              students (data prior to 2010-2011 were not applicable to a few of the race/ethnicity
-              listed above). <span class="upper fat ral"> Sources: </span
-              ><a href="http://nces.ed.gov/" target="_blank"
-                >National Center for Education Statistics</a
-              >
-              and
-              <a href="https://www.ccboe.com/about/public-info-media" target="_blank"
-                >Charles County Public School System.</a
-              >
-            </p>
+            <div id="school-breakdown-notation">
+              <p class="gray small rob">
+                <span class="upper fat ral">Note: </span>This analysis includes schools and programs
+                listed under the
+                <a href="http://www.ccboe.com/" target="_blank">Charles County Board of Education</a
+                >. "Other" in the analysis includes the following: American Indian/Alaska Natives,
+                Asian or Asian/Pacific Islanders, Hawaiian Native/Pacific Islanders, and
+                Multi-racial students (data prior to 2010-2011 were not applicable to a few of the
+                race/ethnicity listed above). <span class="upper fat ral"> Sources: </span
+                ><a href="http://nces.ed.gov/" target="_blank"
+                  >National Center for Education Statistics</a
+                >
+                and
+                <a href="https://www.ccboe.com/about/public-info-media" target="_blank"
+                  >Charles County Public School System.</a
+                >
+              </p>
+            </div>
           </div>
         </div>
 
@@ -172,11 +171,5 @@ onMounted(() => {
 #app {
   width: 100%;
   height: 100%;
-}
-
-@media (max-width: 768px) {
-  #school-breakdown {
-    flex-direction: column;
-  }
 }
 </style>
