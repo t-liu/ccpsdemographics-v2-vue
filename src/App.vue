@@ -11,9 +11,7 @@
       <div v-else-if="error">Error: {{ error }}</div>
 
       <template v-else>
-        <!-- left column (empty for padding purposes) -->
         <div class="col-xs-2 col-sm-1 col-mid-1 col-lg-2"></div>
-
         <div class="col-xs-14 col-sm-10 col-mid-10 col-lg-8">
           <div id="briefsummary">
             <h3 class="upper ral heavier black">
