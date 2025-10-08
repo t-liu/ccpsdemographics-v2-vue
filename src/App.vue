@@ -70,7 +70,7 @@
                 Use this interactive map to explore the demographics of each school.
               </p>
             </div>
-            <div>
+            <div id="map-and-list-container">
               <div id="map-container">
                 <SchoolMap
                   :schools="schools"
@@ -111,37 +111,36 @@
         <div class="col-xs-2 col-sm-1 col-mid-1 col-lg-2"></div>
       </template>
     </div>
+    <!-- Add your footer here -->
+    <footer>
+      <div class="footer">
+        <div class="navbar-footer-left">
+          <p class="navbar-text">Copyright &copy; {{ new Date().getFullYear() }} Thomas Liu</p>
+        </div>
+        <div class="navbar-collapse social-bookmarks">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="mailto">
+              <a href="mailto:thomas.s.liu@gmail.com" target="_blank" title="Personal E-mail"> </a>
+            </li>
+            <li class="twitter">
+              <a href="https://twitter.com/tliu301" target="_blank" title="Personal Twitter"> </a>
+            </li>
+            <li class="linkedin">
+              <a
+                href="http://www.linkedin.com/in/thomas-liu-tech"
+                target="_blank"
+                title="Personal LinkedIn"
+              >
+              </a>
+            </li>
+            <li class="github">
+              <a href="https://github.com/t-liu" target="_blank" title="Personal Github"> </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
   </div>
-
-  <!-- Add your footer here -->
-  <footer>
-    <div class="footer">
-      <div class="navbar-footer-left">
-        <p class="navbar-text">Copyright &copy; {{ new Date().getFullYear() }} Thomas Liu</p>
-      </div>
-      <div class="navbar-collapse social-bookmarks">
-        <ul class="nav navbar-nav navbar-right">
-          <li class="mailto">
-            <a href="mailto:thomas.s.liu@gmail.com" target="_blank" title="Personal E-mail"> </a>
-          </li>
-          <li class="twitter">
-            <a href="https://twitter.com/tliu301" target="_blank" title="Personal Twitter"> </a>
-          </li>
-          <li class="linkedin">
-            <a
-              href="http://www.linkedin.com/in/thomas-liu-tech"
-              target="_blank"
-              title="Personal LinkedIn"
-            >
-            </a>
-          </li>
-          <li class="github">
-            <a href="https://github.com/t-liu" target="_blank" title="Personal Github"> </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </footer>
 </template>
 
 <script setup>
@@ -170,6 +169,8 @@ onMounted(() => {
 /* Add Vue-specific styles */
 #app {
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 </style>
