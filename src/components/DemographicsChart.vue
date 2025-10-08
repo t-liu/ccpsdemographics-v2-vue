@@ -239,5 +239,15 @@ watch(
   width: 100%;
   max-width: 800px;
   height: auto;
+  margin: 0 auto; /* Center horizontally */
+  display: flex; /* Use flexbox to center content */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically, if needed */
+}
+
+.chart-container svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 </style>
