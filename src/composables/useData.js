@@ -1,5 +1,4 @@
 import { ref, computed } from 'vue'
-import _ from 'lodash'
 
 export function useData() {
   const rawData = ref([])
@@ -25,7 +24,6 @@ export function useData() {
       }
 
       const schoolData = await response.json()
-      console.log('Data loaded:', schoolData.length, 'schools')
 
       rawData.value = schoolData
       processSchoolData()
@@ -38,8 +36,6 @@ export function useData() {
   }
 
   const processSchoolData = () => {
-    console.log('Processing school data...')
-
     schools.value = rawData.value.map((school) => {
       // Extract first and last year data for "before" and "after"
       const firstYearData =
@@ -92,9 +88,6 @@ export function useData() {
         yearlyData: school.yearlyData || [],
       }
     })
-
-    console.log('Processed', schools.value.length, 'schools')
-    console.log('First school:', schools.value[0])
   }
 
   // Helper function to extract numbers from MongoDB format
@@ -146,16 +139,11 @@ export function useData() {
     return flattened
   })
 
-  const availableYears = computed(() => {
-    return _.chain(chartData.value).map('short_year').uniq().sort().value()
-  })
-
   return {
     rawData,
     schools,
     loading,
     error,
-    availableYears,
     chartData,
     loadData,
   }

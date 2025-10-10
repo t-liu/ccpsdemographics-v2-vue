@@ -74,8 +74,6 @@ const levelColors = {
 }
 
 const initMap = () => {
-  console.log('🗺️ Initializing map...')
-
   map = L.map(mapContainer.value).setView([38.6, -76.9], 10)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -89,17 +87,13 @@ const initMap = () => {
 
   // Wait for map to be fully loaded
   map.whenReady(() => {
-    console.log('✅ Map is ready!')
     mapReady = true
 
     // Try to add markers if we already have school data
     if (props.schools && props.schools.length > 0) {
-      console.log('🎯 Map ready and schools available, adding markers')
       addSchoolMarkers()
     }
   })
-
-  console.log('🗺️ Map initialization complete')
 }
 
 const updateHoverBoxPosition = (e) => {
@@ -117,15 +111,10 @@ const initHover = () => {
 }
 
 const addSchoolMarkers = () => {
-  console.log('🎯 addSchoolMarkers called')
-  console.log('  Schools:', props.schools.length)
-
   if (!mapReady || !map || !markersLayer) {
-    console.log('❌ Prerequisites not met, skipping marker addition')
     return
   }
 
-  console.log('🧹 Clearing existing markers')
   markersLayer.clearLayers()
 
   let markersAdded = 0
@@ -137,10 +126,6 @@ const addSchoolMarkers = () => {
 
     if (lat && lon && !isNaN(lat) && !isNaN(lon) && lat !== 0 && lon !== 0) {
       try {
-        console.log(
-          `📍 Adding circle marker ${markersAdded + 1} for ${school.info.name} (${level}) at [${lat}, ${lon}]`,
-        )
-
         // Create circle marker matching your old codebase style
         const circle = L.circleMarker([lat, lon], {
           radius: 5,
@@ -202,8 +187,6 @@ const addSchoolMarkers = () => {
     }
   })
 
-  console.log(`✅ Successfully added ${markersAdded} circle markers`)
-
   // Fit map to show all markers
   if (markersAdded > 0) {
     setTimeout(() => {
@@ -227,8 +210,6 @@ onMounted(async () => {
 watch(
   () => props.schools,
   (newSchools) => {
-    console.log('👁️ Schools data changed:', newSchools?.length || 0, 'schools')
-
     if (newSchools && newSchools.length > 0) {
       if (mapReady) {
         addSchoolMarkers()
