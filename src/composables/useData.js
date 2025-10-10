@@ -1,5 +1,4 @@
 import { ref, computed } from 'vue'
-import _ from 'lodash'
 
 export function useData() {
   const rawData = ref([])
@@ -147,7 +146,8 @@ export function useData() {
   })
 
   const availableYears = computed(() => {
-    return _.chain(chartData.value).map('short_year').uniq().sort().value()
+    const years = chartData.value.map((d) => d.short_year)
+    return [...new Set(years)].sort()
   })
 
   return {
