@@ -12,4 +12,16 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          d3: ['d3'],
+          leaflet: ['leaflet'],
+          vendor: ['lodash', 'tippy.js'],
+        },
+      },
+    },
+  },
 })
