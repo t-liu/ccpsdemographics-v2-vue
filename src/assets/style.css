@@ -79,12 +79,30 @@
 
   .tippy-box[data-theme~='custom'] {
     background-color: #2a2a2a;
-    color: #e0e0e0;
+    color: #fff;
     border-color: #555;
   }
 
   .tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
     border-left-color: #555;
+  }
+
+  .tip1,
+  .tip2,
+  .tip3 {
+    color: #fff;
+  }
+
+  .summary-tooltip {
+    color: #fff;
+  }
+
+  .summary-tooltip p {
+    color: #fff;
+  }
+
+  .summary-tooltip span(style*="color") {
+    filter: brightness(1.3);
   }
 
   .school-list > ul > li {
