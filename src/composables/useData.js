@@ -145,17 +145,11 @@ export function useData() {
     return flattened
   })
 
-  const availableYears = computed(() => {
-    const years = chartData.value.map((d) => d.short_year)
-    return [...new Set(years)].sort()
-  })
-
   return {
     rawData,
     schools,
     loading,
     error,
-    availableYears,
     chartData,
     loadData,
   }
