@@ -6,13 +6,10 @@ export function useTooltips() {
   let tippyInstances = []
 
   const initTooltips = (selector) => {
-    console.log('Initializing tooltips for selector:', selector)
-
     // Clean up existing tooltips
     cleanup()
 
     const elements = document.querySelectorAll(selector)
-    console.log('Found elements:', elements.length)
 
     if (elements.length === 0) {
       console.warn('No elements found for tooltip selector:', selector)
@@ -31,7 +28,6 @@ export function useTooltips() {
         arrow: true,
         interactive: false,
       })
-      console.log('Tooltips created:', tippyInstances.length)
     } catch (error) {
       console.error('Error creating tooltips:', error)
     }

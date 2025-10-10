@@ -101,7 +101,7 @@
     color: #fff;
   }
 
-  .summary-tooltip span(style*="color") {
+  .summary-tooltip span[style*='color'] {
     filter: brightness(1.3);
   }
 

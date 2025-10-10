@@ -139,7 +139,6 @@ const addSchoolMarkers = () => {
         })
 
         circle.on('click', () => {
-          console.log('📍 Circle clicked for:', school.info.name)
           emit('school-selected', school)
         })
 
@@ -201,7 +200,6 @@ const addSchoolMarkers = () => {
 }
 
 onMounted(async () => {
-  console.log('🚀 SchoolMap mounted')
   await nextTick()
   initMap()
 })
