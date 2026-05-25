@@ -4,21 +4,25 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ci": "run-s type-check build",
     "preview": "vite preview",
-    "test:unit": "vitest",
+    "test:unit": "vitest run",
     "prepare": "cypress install",
     "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
+    "lint:oxlint:ci": "oxlint . -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
-    "lint": "run-s lint:*",
+    "lint:eslint:ci": "eslint .",
+    "lint": "run-s lint:oxlint lint:eslint",
+    "lint:ci": "run-s lint:oxlint:ci lint:eslint:ci",
     "format": "prettier --write src/"
   },
   "dependencies": {
