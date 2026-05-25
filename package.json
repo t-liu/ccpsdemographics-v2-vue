@@ -21,7 +21,7 @@
     "lint:oxlint:ci": "oxlint . -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
     "lint:eslint:ci": "eslint .",
-    "lint": "run-s lint:*",
+    "lint": "run-s lint:oxlint lint:eslint",
     "lint:ci": "run-s lint:oxlint:ci lint:eslint:ci",
     "format": "prettier --write src/"
   },
