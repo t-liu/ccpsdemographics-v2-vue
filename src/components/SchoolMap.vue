@@ -39,24 +39,21 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick } from 'vue'
 import L from 'leaflet'
+import type { School } from '@/types/school'
 
-const props = defineProps({
-  schools: {
-    type: Array,
-    required: true,
-  },
-  selectedSchool: {
-    type: Object,
-    default: null,
-  },
-})
+const props = defineProps<{
+  schools: School[]
+  selectedSchool?: School | null
+}>()
 
-const emit = defineEmits(['school-selected'])
+const emit = defineEmits<{
+  'school-selected': [school: School]
+}>()
 
-const mapContainer = ref(null)
-const hoverBox = ref(null)
-let map = null
-let markersLayer = null
+const mapContainer = ref<HTMLElement | null>(null)
+const hoverBox = ref<HTMLElement | null>(null)
+let map: L.Map | null = null
+let markersLayer: L.LayerGroup | null = null
 let mapReady = false
 
 // Hover box reactive variables
@@ -73,6 +70,8 @@ const levelColors = {
 }
 
 const initMap = () => {
+  if (!mapContainer.value) return
+
   map = L.map(mapContainer.value).setView([38.6, -76.9], 10)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -95,7 +94,7 @@ const initMap = () => {
   })
 }
 
-const updateHoverBoxPosition = (e) => {
+const updateHoverBoxPosition = (e: MouseEvent) => {
   if (hoverBoxVisible.value) {
     hoverBoxPosition.value = {
       x: e.clientX + 10, // Offset from cursor
@@ -114,7 +113,10 @@ const addSchoolMarkers = () => {
     return
   }
 
-  markersLayer.clearLayers()
+  const activeMap = map
+  const activeMarkersLayer = markersLayer
+
+  activeMarkersLayer.clearLayers()
 
   let markersAdded = 0
 
@@ -128,7 +130,7 @@ const addSchoolMarkers = () => {
         // Create circle marker matching your old codebase style
         const circle = L.circleMarker([lat, lon], {
           radius: 5,
-          fillColor: levelColors[level] || levelColors['O'],
+          fillColor: levelColors[level as keyof typeof levelColors] || levelColors['O'],
           color: '#222', // Black stroke
           weight: 1, // stroke-width="1"
           opacity: 1, // stroke-opacity="1"
@@ -141,7 +143,7 @@ const addSchoolMarkers = () => {
           emit('school-selected', school)
         })
 
-        circle.on('mouseover', function (e) {
+        circle.on('mouseover', function (e: L.LeafletMouseEvent) {
           initHover()
           const layer = e.target
 
@@ -161,7 +163,7 @@ const addSchoolMarkers = () => {
           hoverBoxVisible.value = true
         })
 
-        circle.on('mouseout', function (e) {
+        circle.on('mouseout', function (e: L.LeafletMouseEvent) {
           const layer = e.target
 
           // Reset circle style
@@ -175,7 +177,7 @@ const addSchoolMarkers = () => {
           hoverBoxVisible.value = false
         })
 
-        markersLayer.addLayer(circle)
+        activeMarkersLayer.addLayer(circle)
         markersAdded++
       } catch (error) {
         console.error('❌ Error creating circle marker:', error)
@@ -189,8 +191,8 @@ const addSchoolMarkers = () => {
   if (markersAdded > 0) {
     setTimeout(() => {
       try {
-        const group = new L.featureGroup(markersLayer.getLayers())
-        map.fitBounds(group.getBounds(), { padding: [20, 20] })
+        const group = L.featureGroup(activeMarkersLayer.getLayers())
+        activeMap.fitBounds(group.getBounds(), { padding: [20, 20] })
       } catch (e) {
         console.warn('Could not fit bounds:', e)
       }
@@ -228,19 +230,15 @@ watch(
 watch(
   () => props.selectedSchool,
   (school) => {
-    if (school && map && school.info?.lat && school.info?.lon) {
-      // Center map and highlight the selected school
+    if (school && map && markersLayer && school.info?.lat && school.info?.lon) {
       map.setView([school.info.lat, school.info.lon], 12)
 
-      // Find and highlight the selected school's circle
       markersLayer.eachLayer((layer) => {
-        if (
-          layer.getLatLng &&
-          layer.getLatLng().lat === school.info.lat &&
-          layer.getLatLng().lng === school.info.lon
-        ) {
+        if (!(layer instanceof L.CircleMarker)) return
+
+        const { lat, lng } = layer.getLatLng()
+        if (lat === school.info.lat && lng === school.info.lon) {
           layer.openPopup()
-          // Temporarily highlight
           layer.setStyle({ weight: 3, color: '#000' })
           setTimeout(() => {
             layer.setStyle({ weight: 1, color: '#222' })

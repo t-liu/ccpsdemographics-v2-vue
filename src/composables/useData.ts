@@ -1,43 +1,51 @@
 import { ref, computed } from 'vue'
+import type { ChartRecord } from '@/types/chart'
+import type { School } from '@/types/school'
+
+type MongoNumber = number | { $numberInt?: string; $numberDouble?: string; $numberLong?: string }
+
+interface ApiYearData {
+  academicYear: { short: string; full: string }
+  demographics: Record<string, MongoNumber>
+}
+
+interface ApiSchool {
+  schoolId: string | number
+  name: string
+  level: string
+  location: {
+    address: string
+    city: string
+    state: string
+    zipCode: string
+    coordinates: { coordinates: [number, number] }
+  }
+  yearlyData?: ApiYearData[]
+}
 
 export function useData() {
-  const rawData = ref([])
-  const schools = ref([])
+  const rawData = ref<ApiSchool[]>([])
+  const schools = ref<School[]>([])
   const loading = ref(false)
-  const error = ref(null)
+  const error = ref<string | null>(null)
 
-  const loadData = async () => {
-    loading.value = true
-    error.value = null
+  const extractNumber = (value: MongoNumber | null | undefined): number => {
+    if (value == null) return 0
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/schools`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': `${import.meta.env.VITE_API_KEY}`,
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const schoolData = await response.json()
-
-      rawData.value = schoolData
-      processSchoolData()
-    } catch (err) {
-      console.error('Error loading data:', err)
-      error.value = err.message
-    } finally {
-      loading.value = false
+    if (typeof value === 'object') {
+      if (value.$numberInt) return parseInt(value.$numberInt, 10)
+      if (value.$numberDouble) return parseFloat(value.$numberDouble)
+      if (value.$numberLong) return parseInt(value.$numberLong, 10)
     }
+
+    if (typeof value === 'number') return value
+
+    const parsed = parseFloat(String(value))
+    return Number.isNaN(parsed) ? 0 : parsed
   }
 
   const processSchoolData = () => {
     schools.value = rawData.value.map((school) => {
-      // Extract first and last year data for "before" and "after"
       const firstYearData =
         school.yearlyData && school.yearlyData.length > 0 ? school.yearlyData[0] : null
 
@@ -56,7 +64,6 @@ export function useData() {
           state: school.location.state,
           zip: school.location.zipCode,
           level: school.level,
-          // MongoDB stores coordinates as [longitude, latitude], need to reverse
           lat: extractNumber(school.location.coordinates.coordinates[1]),
           lon: extractNumber(school.location.coordinates.coordinates[0]),
         },
@@ -84,32 +91,41 @@ export function useData() {
               },
             ]
           : [],
-        // Store all yearly data for the chart
         yearlyData: school.yearlyData || [],
       }
     })
   }
 
-  // Helper function to extract numbers from MongoDB format
-  const extractNumber = (value) => {
-    if (!value) return 0
+  const loadData = async () => {
+    loading.value = true
+    error.value = null
 
-    // Handle MongoDB number types
-    if (value.$numberInt) return parseInt(value.$numberInt)
-    if (value.$numberDouble) return parseFloat(value.$numberDouble)
-    if (value.$numberLong) return parseInt(value.$numberLong)
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/schools`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': `${import.meta.env.VITE_API_KEY}`,
+        },
+      })
 
-    // If it's already a plain number
-    if (typeof value === 'number') return value
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
 
-    // Try to parse as number
-    const parsed = parseFloat(value)
-    return isNaN(parsed) ? 0 : parsed
+      const schoolData = (await response.json()) as ApiSchool[]
+      rawData.value = schoolData
+      processSchoolData()
+    } catch (err) {
+      console.error('Error loading data:', err)
+      error.value = err instanceof Error ? err.message : String(err)
+    } finally {
+      loading.value = false
+    }
   }
 
-  // Flatten yearlyData for chart consumption
-  const chartData = computed(() => {
-    const flattened = []
+  const chartData = computed<ChartRecord[]>(() => {
+    const flattened: ChartRecord[] = []
 
     rawData.value.forEach((school) => {
       if (school.yearlyData) {
@@ -117,18 +133,11 @@ export function useData() {
           flattened.push({
             school_id: school.schoolId,
             school: school.name,
-            address: school.location.address,
-            city: school.location.city,
-            state: school.location.state,
-            zip: school.location.zipCode,
-            level: school.level,
-            year: yearData.academicYear.full,
             short_year: yearData.academicYear.short,
-            latitude: extractNumber(school.location.coordinates.coordinates[1]),
-            longitude: extractNumber(school.location.coordinates.coordinates[0]),
+            year: yearData.academicYear.full,
+            white: extractNumber(yearData.demographics.white),
             black: extractNumber(yearData.demographics.black),
             hispanic: extractNumber(yearData.demographics.hispanic),
-            white: extractNumber(yearData.demographics.white),
             other: extractNumber(yearData.demographics.other),
             total: extractNumber(yearData.demographics.total),
           })
