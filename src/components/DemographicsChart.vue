@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import * as d3 from 'd3'
 import _ from 'lodash'
