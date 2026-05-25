@@ -146,33 +146,31 @@
 
 <script setup lang="ts">
 import { watch, nextTick } from 'vue'
-const props = defineProps({
-  schools: {
-    type: Array,
-    required: true,
-  },
-  selectedSchool: {
-    type: Object,
-    default: null,
-  },
-})
+import type { School, YearDemographics } from '@/types/school'
 
-const emit = defineEmits(['school-selected'])
+const props = defineProps<{
+  schools: School[]
+  selectedSchool?: School | null
+}>()
 
-const selectSchool = (school) => {
+const emit = defineEmits<{
+  'school-selected': [school: School]
+}>()
+
+const selectSchool = (school: School) => {
   emit('school-selected', school)
 }
 
-const hasCompleteData = (school) => {
+const hasCompleteData = (school: School) => {
   return school.before && school.before.length > 0 && school.after && school.after.length > 0
 }
 
-const calculateTotal = (data) => {
+const calculateTotal = (data: YearDemographics) => {
   if (!data) return 0
   return (data.white || 0) + (data.black || 0) + (data.other || 0) + (data.hispanic || 0)
 }
 
-const calculatePercentage = (value, data) => {
+const calculatePercentage = (value: number, data: YearDemographics) => {
   if (!value || !data) return '0.00'
   const total = data.total || calculateTotal(data)
   if (total === 0) return '0.00'

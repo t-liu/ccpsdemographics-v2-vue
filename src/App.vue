@@ -146,14 +146,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useData } from '@/composables/useData'
+import type { School } from '@/types/school'
 import DemographicsChart from '@/components/DemographicsChart.vue'
 import SchoolMap from '@/components/SchoolMap.vue'
 import SchoolList from '@/components/SchoolList.vue'
 
 const { chartData, schools, loading, error, loadData } = useData()
-const selectedSchool = ref(null)
+const selectedSchool = ref<School | null>(null)
 
-const onSchoolSelected = (school) => {
+const onSchoolSelected = (school: School) => {
   selectedSchool.value = school
 }
 

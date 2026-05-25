@@ -2,17 +2,24 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import * as d3 from 'd3'
 import _ from 'lodash'
-import { useTooltips } from '@/composables/useTooltips'
 import { debounce } from 'lodash'
+import { useTooltips } from '@/composables/useTooltips'
+import type { ChartRecord, YearTotals } from '@/types/chart'
 
-const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-  },
-})
+const props = defineProps<{
+  data: ChartRecord[]
+}>()
 
-const chartRef = ref(null)
+const chartRef = ref<HTMLDivElement | null>(null)
+
+const ethnicityColors = {
+  white: '#98abc5',
+  black: '#8a89a6',
+  other: '#a05d56',
+  hispanic: '#ff8c00',
+} as const
+
+type EthnicityKey = keyof typeof ethnicityColors
 const { initTooltips } = useTooltips()
 
 const createChart = () => {
@@ -25,18 +32,19 @@ const createChart = () => {
   d3.select(chartRef.value).selectAll('*').remove()
 
   // Process data
-  const yearlyData = _.chain(props.data)
+  const yearlyData: YearTotals[] = _.chain(props.data)
     .groupBy('short_year')
-    .map((records, year) => {
-      const totals = records.reduce(
+    .map((records: ChartRecord[], year: string) => {
+      const totals = records.reduce<YearTotals>(
         (acc, record) => ({
-          year: year,
+          year,
           white: acc.white + (record.white || 0),
           black: acc.black + (record.black || 0),
           hispanic: acc.hispanic + (record.hispanic || 0),
           other: acc.other + (record.other || 0),
+          total: 0,
         }),
-        { white: 0, black: 0, hispanic: 0, other: 0 },
+        { year, white: 0, black: 0, hispanic: 0, other: 0, total: 0 },
       )
       totals.total = totals.white + totals.black + totals.hispanic + totals.other
       return totals
@@ -81,17 +89,9 @@ const createChart = () => {
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(yearlyData, (d) => d.total)])
+    .domain([0, d3.max(yearlyData, (d: YearTotals) => d.total) ?? 0])
     .nice()
     .range([height, 0])
-
-  // Define colors
-  const colors = {
-    white: '#98abc5',
-    black: '#8a89a6',
-    other: '#a05d56',
-    hispanic: '#ff8c00',
-  }
 
   const colorScale = d3
     .scaleOrdinal()
@@ -100,7 +100,7 @@ const createChart = () => {
 
   // Stack the data
   const stack = d3.stack().keys(['white', 'black', 'other', 'hispanic'])
-  const stackedData = stack(yearlyData)
+  const stackedData = stack(yearlyData as Iterable<{ [key: string]: number }>)
 
   // Create bars
   const groups = g
@@ -109,21 +109,21 @@ const createChart = () => {
     .enter()
     .append('g')
     .attr('class', 'year-group')
-    .attr('fill', (d) => colors[d.key])
+    .attr('fill', (d) => ethnicityColors[d.key as EthnicityKey])
 
   const rects = groups
     .selectAll('rect')
     .data((d) => d)
     .enter()
     .append('rect')
-    .attr('x', (d) => x(d.data.year))
+    .attr('x', (d) => x(String(d.data.year)) ?? 0)
     .attr('y', (d) => y(d[1]))
     .attr('height', (d) => y(d[0]) - y(d[1]))
     .attr('width', x.bandwidth())
 
   // Tooltips
   rects.attr('title', function (d) {
-    const parentData = d3.select(this.parentNode).datum()
+    const parentData = d3.select(this.parentNode as Element).datum() as d3.Series<YearTotals, string>
     const ethnicity = parentData.key
     const year = d.data.year
     const studentCount = d[1] - d[0]
@@ -160,7 +160,7 @@ const createChart = () => {
     .attr('class', 'legend')
     .attr('transform', `translate(${legendX}, ${legendY})`)
 
-  const legendItems = Object.entries(colors).map((d, i) => ({
+  const legendItems = Object.entries(ethnicityColors).map((d, i) => ({
     key: d[0],
     color: d[1],
     y: window.innerWidth <= 768 ? 0 : i * 25,
@@ -173,7 +173,7 @@ const createChart = () => {
     .enter()
     .append('g')
     .attr('class', 'legend-item')
-    .attr('transform', (d) =>
+    .attr('transform', (d: { x: number; y: number }) =>
       window.innerWidth <= 768 ? `translate(${d.x}, ${d.y})` : `translate(0, ${d.y})`,
     )
 
@@ -181,7 +181,7 @@ const createChart = () => {
     .append('rect')
     .attr('width', 15)
     .attr('height', 15)
-    .attr('fill', (d) => d.color)
+    .attr('fill', (d: { color: string }) => d.color)
     .attr('stroke', '#000')
     .attr('stroke-width', 1)
 
@@ -192,7 +192,7 @@ const createChart = () => {
     .style('font-size', fontSize)
     .style('font-family', 'Raleway, sans-serif')
     .style('fill', '#000')
-    .text((d) => d.key.charAt(0).toUpperCase() + d.key.slice(1))
+    .text((d: { key: string }) => d.key.charAt(0).toUpperCase() + d.key.slice(1))
 
   // Initialize tooltips
   setTimeout(() => {

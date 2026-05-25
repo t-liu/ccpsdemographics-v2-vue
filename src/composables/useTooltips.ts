@@ -1,11 +1,10 @@
 import { onUnmounted } from 'vue'
-import tippy from 'tippy.js'
+import tippy, { type Instance } from 'tippy.js'
 
 export function useTooltips() {
-  let tippyInstances = []
+  let tippyInstances: Instance[] = []
 
-  const initTooltips = (selector) => {
-    // Clean up existing tooltips
+  const initTooltips = (selector: string) => {
     cleanup()
 
     const elements = document.querySelectorAll(selector)
@@ -16,10 +15,9 @@ export function useTooltips() {
     }
 
     try {
-      tippyInstances = tippy(elements, {
+      tippyInstances = tippy(Array.from(elements), {
         content(reference) {
-          const title = reference.getAttribute('title')
-          return title
+          return reference.getAttribute('title') ?? ''
         },
         allowHTML: true,
         placement: 'auto',
@@ -27,16 +25,14 @@ export function useTooltips() {
         arrow: true,
         interactive: false,
       })
-    } catch (error) {
-      console.error('Error creating tooltips:', error)
+    } catch (err) {
+      console.error('Error creating tooltips:', err)
     }
   }
 
   const cleanup = () => {
     tippyInstances.forEach((instance) => {
-      if (instance && instance.destroy) {
-        instance.destroy()
-      }
+      instance?.destroy()
     })
     tippyInstances = []
   }
