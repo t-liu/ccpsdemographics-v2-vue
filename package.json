@@ -17,12 +17,9 @@
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
-    "lint:oxlint:ci": "oxlint . -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
-    "lint:eslint:ci": "eslint .",
-    "lint": "run-s lint:oxlint lint:eslint",
-    "lint:ci": "run-s lint:oxlint:ci lint:eslint:ci",
+    "lint:eslint:ci": "eslint . --ext .js,.ts,.vue --max-warnings=0",
+    "lint": "eslint . --ext .js,.ts,.vue --max-warnings=0",
     "format": "prettier --write src/"
   },
   "dependencies": {
