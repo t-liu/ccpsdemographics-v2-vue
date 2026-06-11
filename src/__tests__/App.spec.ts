@@ -34,9 +34,7 @@ describe('App', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('A T-Liu Production')
-    expect(wrapper.text()).toContain(
-      'The Changing Demographics of Charles County Public Schools',
-    )
+    expect(wrapper.text()).toContain('The Changing Demographics of Charles County Public Schools')
     expect(fetch).toHaveBeenCalledWith(
       'https://api.example.com/schools',
       expect.objectContaining({
