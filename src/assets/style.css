@@ -37,7 +37,13 @@
 }
 
 /* Dark Theme */
-@media (prefers-color-scheme: dark) {
+[data-bs-theme='dark'] {
+  --bg-body: #1a1a1a;
+  --color-primary-text: #b0c4de;
+  --color-black: #fff;
+  --color-white: #1a1a1a;
+  --bg-school-list: #2d2d2d;
+
   :root {
     /* Inverted Color Palette */
     --color-primary-text: #b8c1cc;
@@ -71,10 +77,25 @@
   /* Adjustments for dark theme */
   body {
     background-color: var(--bg-body);
+    color: var(--color-primary-text);
   }
 
   .jumbotron {
     background-color: #2a2a2a;
+  }
+
+  .jumbotron text,
+  .jumbotron span,
+  .jumbotron div {
+    color: #e0e0e0 !important;
+  }
+
+  .footer {
+    background-color: #0d0d0d !important;
+  }
+
+  svg text {
+    fill: #e0e0e0 !important;
   }
 
   .tippy-box[data-theme~='custom'] {
@@ -152,6 +173,7 @@ body {
 .content {
   margin-bottom: var(--footer-height);
   text-align: left;
+  padding-top: 2.5rem;
 }
 
 /* TYPE FAMILIES */
@@ -234,19 +256,11 @@ body {
   color: #c4c4c4;
 }
 .navbar .navbar-text {
-  float: left;
   margin-left: 15px;
   margin-right: 15px;
   font-family: var(--font-opensans);
-}
-
-.navbar-header,
-.navbar-footer-left,
-.navbar-nav > li {
-  float: left;
-}
-.navbar-right {
-  float: right;
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .summary-tooltip {
@@ -365,7 +379,7 @@ svg text {
   list-style-type: none;
 }
 .school-list > ul > li {
-  padding: 1px 10px;
+  padding: 10px 16px;
   cursor: pointer;
   border-bottom: 1px solid var(--color-gray-light);
   list-style-type: none;
@@ -378,6 +392,9 @@ svg text {
   font-family: var(--font-raleway);
   font-weight: 700;
   color: var(--color-black);
+  font-size: 13px; /* Explicitly scales down the aggressive default heading size */
+  margin: 0; /* Removes native browser block margins to prevent alignment skew */
+  line-height: 1.4;
 }
 .selected-school {
   background: var(--color-white);
@@ -448,7 +465,7 @@ svg text {
   color: #333;
 }
 
-/* Social Bookmark Icons - Only used icons: github, linkedin, twitter, mailto */
+/* Social Bookmark Icons - Refactored for Font Awesome Components */
 .social-bookmarks {
   padding-top: 10px;
   margin: 0;
@@ -463,49 +480,34 @@ svg text {
 }
 .social-bookmarks li a {
   transition: all 0.3s ease;
-  display: block;
-  float: left;
+  display: flex; /* Changed to flex to easily center SVGs */
+  align-items: center; /* Vertically center the icon */
+  justify-content: center; /* Horizontally center the icon */
   margin: 0;
   width: 40px;
   height: 40px;
-  text-indent: -9999px;
-  background-position: 0 -40px;
   background-color: transparent;
-}
-.social-bookmarks li a:hover {
-  background-position: 0 -40px;
+  color: var(--color-primary-text); /* Sets standard initial icon color */
+  font-size: 18px; /* Direct control over icon size */
 }
 
-/* Individual social media icons */
-.social-bookmarks li.github a {
-  background-image: url(/images/icons/github.png);
-  background-repeat: no-repeat;
-  background-position: 0 0;
+/* Hover Adjustments - Keeps your background palette color transformations */
+.social-bookmarks li a:hover {
+  color: var(--color-white); /* Switches icon to white on hover */
 }
+
 .social-bookmarks li.github a:hover {
   background-color: var(--color-github);
 }
-.social-bookmarks li.linkedin a {
-  background-image: url(/images/icons/linkedin.png);
-  background-repeat: no-repeat;
-  background-position: 0 0;
-}
+
 .social-bookmarks li.linkedin a:hover {
   background-color: var(--color-linkedin);
 }
-.social-bookmarks li.twitter a {
-  background-image: url(/images/icons/twitter.png);
-  background-repeat: no-repeat;
-  background-position: 0 0;
-}
+
 .social-bookmarks li.twitter a:hover {
   background-color: var(--color-twitter);
 }
-.social-bookmarks li.mailto a {
-  background-image: url(/images/icons/mailto.png);
-  background-repeat: no-repeat;
-  background-position: 0 0;
-}
+
 .social-bookmarks li.mailto a:hover {
   background-color: var(--color-mailto);
 }
@@ -607,19 +609,6 @@ footer .social-bookmarks li {
 }
 
 @media only screen and (max-width: 768px) {
-  /* Remove padding from the main content column on mobile */
-  .col-xs-14 {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  /* Also remove width from the empty side columns on mobile */
-  .col-xs-2 {
-    display: none;
-  }
-  /* Make the main column full width */
-  .col-xs-14 {
-    width: 100% !important;
-  }
   /* Add back padding for readability to all content sections */
   #briefsummary,
   #ccps-breakdown,
@@ -649,6 +638,7 @@ footer .social-bookmarks li {
   /* Ensure content doesn't overlap footer */
   .content {
     clear: both;
+    padding-top: 2.5rem;
   }
 
   .summary-tooltip {

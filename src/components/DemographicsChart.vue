@@ -123,7 +123,10 @@ const createChart = () => {
 
   // Tooltips
   rects.attr('title', function (d) {
-    const parentData = d3.select(this.parentNode as Element).datum() as d3.Series<YearTotals, string>
+    const parentData = d3.select(this.parentNode as Element).datum() as d3.Series<
+      YearTotals,
+      string
+    >
     const ethnicity = parentData.key
     const year = d.data.year
     const studentCount = d[1] - d[0]
