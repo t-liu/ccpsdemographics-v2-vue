@@ -18,7 +18,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint:eslint": "eslint . --fix",
-    "lint:eslint:ci": "eslint . --ext .js,.ts,.vue --max-warnings=0",
+    "lint:ci": "eslint . --ext .js,.ts,.vue --max-warnings=0",
     "lint": "eslint . --ext .js,.ts,.vue --max-warnings=0",
     "format": "prettier --write src/"
   },
