@@ -157,12 +157,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineAsyncComponent } from 'vue'
 import { useData } from '@/composables/useData'
 import type { School } from '@/types/school'
-import DemographicsChart from '@/components/DemographicsChart.vue'
-import SchoolMap from '@/components/SchoolMap.vue'
 import SchoolList from '@/components/SchoolList.vue'
+
+// Lazy-load heavy visualization components
+const DemographicsChart = defineAsyncComponent(() => 
+  import('@/components/DemographicsChart.vue')
+)
+const SchoolMap = defineAsyncComponent(() => 
+  import('@/components/SchoolMap.vue')
+)
 
 const { chartData, schools, loading, error, loadData } = useData()
 const selectedSchool = ref<School | null>(null)

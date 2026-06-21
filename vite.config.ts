@@ -4,7 +4,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), vueDevTools()],
   resolve: {
@@ -14,12 +13,16 @@ export default defineConfig({
   },
   build: {
     cssCodeSplit: true,
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          d3: ['d3'],
-          leaflet: ['leaflet'],
-          vendor: ['lodash', 'tippy.js'],
+        // Group core stable dependencies together, let async components split themselves
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('d3')) return 'vendor-d3'
+            if (id.includes('leaflet')) return 'vendor-leaflet'
+            return 'vendor-core' // lodash, tippy, vue, etc.
+          }
         },
       },
     },

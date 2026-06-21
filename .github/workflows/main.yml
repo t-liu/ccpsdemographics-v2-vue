@@ -135,11 +135,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Sync dist to S3
+      # Sync immutable assets directory and cache heavily for 1 year (31536000 seconds)
+      - name: Sync Hashed Assets to S3
+        run: |
+          aws s3 sync dist/assets/ "s3://${{ secrets.AWS_S3_BUCKET }}/assets/" \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --region "${{ env.AWS_REGION }}"
+
+      # Sync root files (index.html, favicon) and force verification every time
+      - name: Sync Root Entrypoints to S3
         run: |
           aws s3 sync dist/ "s3://${{ secrets.AWS_S3_BUCKET }}/" \
             --delete \
+            --exclude "assets/*" \
             --exclude '.git/*' \
+            --cache-control "public, max-age=0, must-revalidate" \
             --region "${{ env.AWS_REGION }}"
 
       - name: Invalidate CloudFront cache
